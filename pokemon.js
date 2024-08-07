@@ -1,48 +1,26 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pokemon</title>
-    <link rel="stylesheet" href="style.css">
-</head>
-<body>
-    <header class="container">
-        <a href="/" class="logo">
-            <img src="img/logo.webp" alt="Logo Pokedex" />
-        </a>
-        <form>
-            <div class="form-group">
-                <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="currentColor"
-                    class="icon-search"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"
-                    />
-                </svg>
-                <input
-                    type="search"
-                    placeholder="Buscar nombre de Pokemon"
-                />
-            </div>
+document.addEventListener("DOMContentLoaded", () => {
+const listaPokemon = document.querySelector(".card-list-pokemon.container");
+    let URL = "https://pokeapi.co/api/v2/pokemon/";
 
-            <button class="btn-search">Buscar</button>
-        </form>
-    </header>
+    for (let i = 1; i <= 151; i++) {
+        fetch(URL + i)
+            .then((response) => response.json())
+            .then(data => mostrarPokemon(data));
+    }
 
-    <main class="container main-pokemon">
-        <!-- <div class="header-main-pokemon">
+    function mostrarPokemon(poke) {
+
+        let tipos = poke.types.map((type) => `<p class="${type.type.name} tipo">${type.type.name}</p>`);
+        tipos = tipos.join('');
+
+        const div = document.createElement("div");
+        div.classList.add("pokemon");
+        div.innerHTML = `
+            <div class="header-main-pokemon">
             <span class="number-pokemon">#1</span>
             <div class="container-img-pokemon">
                 <img
-						src="https://assets.pokemon.com/assets/cms2/img/pokedex/detail/001.png"
+						src="${poke.sprites.other["official-artwork"].front_default}"
 						alt="pokemon bulbasaur"
 					/>
             </div>
@@ -54,11 +32,11 @@
                 <div class="info-pokemon">
                     <div class="group-info">
                         <p>Altura</p>
-                        <span>0.7m</span>
+                        <span>${poke.height}m</span>
                     </div>
                     <div class="group-info">
                         <p>Peso</p>
-                        <span>6.9Kg</span>
+                        <span>${poke.weight}Kg</span>
                     </div>
                 </div>
             </div>
@@ -98,7 +76,8 @@
                     <span class="counter-stat">45</span>
                 </div>
             </div>
-        </div> -->
-    </main>
-</body>
-</html>
+        </div>
+        `;
+        listaPokemon.append(div);
+    }
+});
